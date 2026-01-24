@@ -37,15 +37,17 @@ export interface AnalysisResults {
 }
 
 type ResultsContextType = {
-  analysisResults: AnalysisResults | null;
-  setAnalysisResults: Dispatch<SetStateAction<AnalysisResults | null>>;
+  analysisResults: AnalysisResults[] | null;
+  setAnalysisResults: Dispatch<SetStateAction<AnalysisResults[] | null>>;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const ResultsContext = createContext<ResultsContextType | null>(null);
 
 export function ResultsProvider({ children }: { children: ReactNode }) {
-  const [analysisResults, setAnalysisResults] =
-    useState<AnalysisResults | null>(null);
+  const [analysisResults, setAnalysisResults] = useState<
+    AnalysisResults[] | null
+  >(null);
 
   const value = useMemo(() => {
     return {
