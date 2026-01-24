@@ -2,6 +2,12 @@ import { useAnalysis } from "../hooks/useAnalysis";
 import { Card, CardContent } from "./ui/card";
 import { Progress } from "./ui/progress";
 
+const DANGER_LEVELS: Record<string, string> = {
+  LABEL_0: "Normal",
+  LABEL_1: "Critical",
+  LABEL_2: "Very Critical",
+};
+
 function Analysis() {
   const { analysisResults } = useAnalysis();
 
@@ -84,20 +90,18 @@ function Analysis() {
             <h3 className="text-lg font-semibold mb-3">Danger Level</h3>
             {analysisResults?.danger ? (
               <div className="space-y-4">
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-end justify-between mb-2">
                   <span className="font-medium text-sm">Score</span>
 
-                  <span
-                    className={`text-lg font-bold ${
-                      analysisResults.danger.score > 0.7
-                        ? "text-red-600"
-                        : analysisResults.danger.score > 0.4
-                          ? "text-orange-500"
-                          : "text-green-600"
-                    }`}
-                  >
-                    {(analysisResults.danger.score * 100).toFixed(1)}%
-                  </span>
+                  <div className="flex items-center gap-2 flex-col">
+                    <span className="font-bold text-lg">
+                      {DANGER_LEVELS[analysisResults.danger.label]}
+                    </span>
+
+                    <span className="font-bold">
+                      {(analysisResults.danger.score * 100).toFixed(1)}%
+                    </span>
+                  </div>
                 </div>
 
                 <Progress
