@@ -1,20 +1,45 @@
+import { Upload } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 
-import analyzeComment from "../services/api/Analyze";
 import { useAnalysis } from "../hooks/useAnalysis";
+import analyzeComment from "../services/api/Analyze";
+import uploadCsv from "../services/api/Upload";
 
 function Feedback() {
   const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { setAnalysisResults } = useAnalysis();
 
   const handleSubmit = () => {
-    analyzeComment(comment).then((response) => {
-      setAnalysisResults(response);
-    });
-  }
+    if (!comment.trim()) return;
+
+    setLoading(true);
+
+    analyzeComment(comment)
+      .then((response) => {
+        setAnalysisResults(response);
+      })
+      .finally(() => setLoading(false));
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setLoading(true);
+    uploadCsv(file)
+      .then((response) => {
+        setAnalysisResults(response);
+      })
+      .finally(() => {
+        setLoading(false);
+        e.target.value = "";
+      });
+  };
 
   return (
     <div>
@@ -26,13 +51,33 @@ function Feedback() {
         value={comment}
         placeholder="Your feedback..."
         onChange={(e) => setComment(e.target.value)}
+        disabled={loading}
       />
 
-      <div className="flex justify-end mt-4">
-        <Button
-          disabled={!comment.trim()}
-          onClick={handleSubmit}
-        >Submit</Button>
+      <div className="flex justify-between mt-4">
+        <div>
+          <input
+            type="file"
+            accept="application/csv"
+            id="csv-upload"
+            className="hidden"
+            onChange={handleFileUpload}
+            disabled={loading}
+          />
+          <Label
+            htmlFor="csv-upload"
+            className={`inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 cursor-pointer ${
+              loading ? "opacity-50 pointer-events-none" : ""
+            }`}
+          >
+            <Upload className="mr-2 h-4 w-4" />
+            Upload CSV
+          </Label>
+        </div>
+
+        <Button disabled={!comment.trim() || loading} onClick={handleSubmit}>
+          {loading ? "Analyzing..." : "Submit"}
+        </Button>
       </div>
     </div>
   );
