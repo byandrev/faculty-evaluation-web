@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
 import { useAnalysis } from "../hooks/useAnalysis";
 import { Card, CardContent } from "./ui/card";
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-  type CarouselApi,
-} from "./ui/carousel";
-import { Progress } from "./ui/progress";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./ui/table";
 
 const DANGER_LEVELS: Record<string, string> = {
   LABEL_0: "Normal",
@@ -17,33 +15,20 @@ const DANGER_LEVELS: Record<string, string> = {
   LABEL_2: "Very Critical",
 };
 
+const SENTIMENT_COLORS: Record<string, string> = {
+  POS: "bg-green-100 text-green-800",
+  NEG: "bg-red-100 text-red-800",
+  NEU: "bg-gray-100 text-gray-800",
+};
+
+const DANGER_COLORS: Record<string, string> = {
+  LABEL_0: "bg-green-100 text-green-800",
+  LABEL_1: "bg-yellow-100 text-yellow-800",
+  LABEL_2: "bg-red-100 text-red-800",
+};
+
 function Analysis() {
   const { analysisResults } = useAnalysis();
-
-  const [api, setApi] = useState<CarouselApi>();
-  const [current, setCurrent] = useState(0);
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (!api) {
-      return;
-    }
-
-    const onSelect = () => {
-      setCount(api.scrollSnapList().length);
-      setCurrent(api.selectedScrollSnap() + 1);
-    };
-
-    onSelect();
-
-    api.on("select", onSelect);
-    api.on("reInit", onSelect);
-
-    return () => {
-      api.off("select", onSelect);
-      api.off("reInit", onSelect);
-    };
-  }, [api]);
 
   if (!analysisResults || analysisResults.length === 0) {
     return (
@@ -65,157 +50,90 @@ function Analysis() {
     <div>
       <h2 className="text-2xl font-bold mb-4">Analysis</h2>
 
-      <div className="flex flex-col items-center px-12">
-        <Carousel setApi={setApi} className="w-full max-w-xl">
-          <CarouselContent>
-            {analysisResults?.map((result, index) => (
-              <CarouselItem key={index}>
-                <div className="p-1">
-                  <Card>
-                    <CardContent className="space-y-6 pt-6">
-                      {result.comment && (
-                        <div>
-                          <h3 className="text-lg font-semibold mb-2">
-                            Comment
-                          </h3>
-                          <p className="text-gray-700 dark:text-gray-300 italic">
-                            "{result.comment}"
-                          </p>
-                        </div>
-                      )}
+      <Card>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-12">#</TableHead>
+                <TableHead>Comment</TableHead>
+                <TableHead className="w-30">Sentiment</TableHead>
+                <TableHead className="w-25">POS</TableHead>
+                <TableHead className="w-25">NEU</TableHead>
+                <TableHead className="w-25">NEG</TableHead>
+                <TableHead className="w-30">Danger Level</TableHead>
+                <TableHead className="w-25">Score</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {analysisResults.map((result, index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{index + 1}</TableCell>
 
-                      <div>
-                        <h3 className="text-lg font-semibold mb-3">
-                          Sentiment Analysis
-                        </h3>
-                        {result.sentiment ? (
-                          <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                              <span className="font-medium">
-                                Dominant Sentiment:
-                              </span>
-                              <span
-                                className={`px-3 py-1 rounded-full text-sm font-bold ${
-                                  result.sentiment.output === "POS"
-                                    ? "bg-green-100 text-green-800"
-                                    : result.sentiment.output === "NEG"
-                                      ? "bg-red-100 text-red-800"
-                                      : "bg-gray-100 text-gray-800"
-                                }`}
-                              >
-                                {result.sentiment.output}
-                              </span>
-                            </div>
+                  <TableCell
+                    className="max-w-75 truncate"
+                    title={result.comment}
+                  >
+                    {result.comment || "-"}
+                  </TableCell>
 
-                            <div className="grid grid-cols-3 gap-4 text-center">
-                              <div className="space-y-1">
-                                <p className="text-xs text-gray-500">
-                                  Positive
-                                </p>
+                  <TableCell>
+                    {result.sentiment ? (
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-bold ${SENTIMENT_COLORS[result.sentiment.output] || "bg-gray-100 text-gray-800"}`}
+                      >
+                        {result.sentiment.output}
+                      </span>
+                    ) : (
+                      "-"
+                    )}
+                  </TableCell>
 
-                                <Progress
-                                  value={result.sentiment.probas.POS * 100}
-                                  className="h-2 [&>div]:bg-gray-400"
-                                />
+                  <TableCell>
+                    {result.sentiment
+                      ? `${(result.sentiment.probas.POS * 100).toFixed(1)}%`
+                      : "-"}
+                  </TableCell>
 
-                                <p className="text-xs font-medium">
-                                  {(result.sentiment.probas.POS * 100).toFixed(
-                                    1,
-                                  )}
-                                  %
-                                </p>
-                              </div>
+                  <TableCell>
+                    {result.sentiment
+                      ? `${(result.sentiment.probas.NEU * 100).toFixed(1)}%`
+                      : "-"}
+                  </TableCell>
 
-                              <div className="space-y-1">
-                                <p className="text-xs text-gray-500">Neutral</p>
+                  <TableCell>
+                    {result.sentiment
+                      ? `${(result.sentiment.probas.NEG * 100).toFixed(1)}%`
+                      : "-"}
+                  </TableCell>
 
-                                <Progress
-                                  value={result.sentiment.probas.NEU * 100}
-                                  className="h-2 [&>div]:bg-gray-400"
-                                />
+                  <TableCell>
+                    {result.danger ? (
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-bold ${DANGER_COLORS[result.danger.label] || "bg-gray-100 text-gray-800"}`}
+                      >
+                        {DANGER_LEVELS[result.danger.label]}
+                      </span>
+                    ) : (
+                      "-"
+                    )}
+                  </TableCell>
 
-                                <p className="text-xs font-medium">
-                                  {(result.sentiment.probas.NEU * 100).toFixed(
-                                    1,
-                                  )}
-                                  %
-                                </p>
-                              </div>
+                  <TableCell>
+                    {result.danger
+                      ? `${(result.danger.score * 100).toFixed(1)}%`
+                      : "-"}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
-                              <div className="space-y-1">
-                                <p className="text-xs text-gray-500">
-                                  Negative
-                                </p>
-
-                                <Progress
-                                  value={result.sentiment.probas.NEG * 100}
-                                  className="h-2 [&>div]:bg-gray-400"
-                                />
-
-                                <p className="text-xs font-medium">
-                                  {(result.sentiment.probas.NEG * 100).toFixed(
-                                    1,
-                                  )}
-                                  %
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <p className="text-gray-500 text-sm">
-                            No sentiment analysis data available.
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="h-px bg-gray-200" />
-
-                      <div>
-                        <h3 className="text-lg font-semibold mb-3">
-                          Danger Level
-                        </h3>
-
-                        {result.danger ? (
-                          <div className="space-y-4">
-                            <div className="flex items-end justify-between mb-2">
-                              <span className="font-medium text-sm">Score</span>
-
-                              <div className="flex items-center gap-2 flex-col">
-                                <span className="font-bold text-lg">
-                                  {DANGER_LEVELS[result.danger.label]}
-                                </span>
-
-                                <span className="font-bold">
-                                  {(result.danger.score * 100).toFixed(1)}%
-                                </span>
-                              </div>
-                            </div>
-
-                            <Progress
-                              value={result.danger.score * 100}
-                              className="h-2 [&>div]:bg-gray-400"
-                            />
-                          </div>
-                        ) : (
-                          <p className="text-gray-500 text-sm">
-                            No danger analysis data available.
-                          </p>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
-
-        <div className="py-2 text-center text-sm text-muted-foreground">
-          Slide {current} of {count}
-        </div>
-      </div>
+      <p className="py-2 text-center text-sm text-muted-foreground">
+        {analysisResults.length} result{analysisResults.length !== 1 ? "s" : ""}
+      </p>
     </div>
   );
 }
