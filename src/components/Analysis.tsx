@@ -1,5 +1,10 @@
+import { useState } from "react";
 import { useAnalysis } from "../hooks/useAnalysis";
-import { Card, CardContent } from "./ui/card";
+import summarizeComments, {
+  type SummaryResponse,
+} from "../services/api/Summarize";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import {
   Table,
   TableBody,
@@ -29,6 +34,28 @@ const DANGER_COLORS: Record<string, string> = {
 
 function Analysis() {
   const { analysisResults } = useAnalysis();
+  const [summary, setSummary] = useState<SummaryResponse | null>(null);
+  const [isLoadingSummary, setIsLoadingSummary] = useState(false);
+  const [summaryError, setSummaryError] = useState<string | null>(null);
+
+  const handleGenerateSummary = async () => {
+    if (!analysisResults || analysisResults.length === 0) return;
+
+    setIsLoadingSummary(true);
+    setSummaryError(null);
+
+    try {
+      const comments = analysisResults.map((result) => result.comment);
+      const response = await summarizeComments(comments);
+      setSummary(response);
+    } catch (error) {
+      setSummaryError(
+        error instanceof Error ? error.message : "Error generating summary",
+      );
+    } finally {
+      setIsLoadingSummary(false);
+    }
+  };
 
   if (!analysisResults || analysisResults.length === 0) {
     return (
@@ -48,7 +75,37 @@ function Analysis() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">Analysis</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-bold">Analysis</h2>
+        <Button onClick={handleGenerateSummary} disabled={isLoadingSummary}>
+          {isLoadingSummary ? "Generating..." : "Generate Summary"}
+        </Button>
+      </div>
+
+      {summaryError && (
+        <Card className="mb-4 border-red-200 bg-red-50">
+          <CardContent className="py-3">
+            <p className="text-red-600 text-sm">{summaryError}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {summary && (
+        <Card className="mb-4 border-blue-200 bg-blue-50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg text-blue-800">
+              Comments Summary
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <p className="text-gray-700 mb-2">{summary.summary}</p>
+            <div className="flex gap-4 text-sm text-gray-500">
+              <span>Total comments: {summary.total_comments}</span>
+              <span>Status: {summary.status}</span>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardContent className="p-0">
@@ -65,6 +122,7 @@ function Analysis() {
                 <TableHead className="w-25">Score</TableHead>
               </TableRow>
             </TableHeader>
+
             <TableBody>
               {analysisResults.map((result, index) => (
                 <TableRow key={index}>
