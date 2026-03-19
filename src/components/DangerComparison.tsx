@@ -3,7 +3,7 @@ import compareDanger, {
   type DangerComparisonResponse,
 } from "../services/api/CompareDanger";
 import { Button } from "./ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent } from "./ui/card";
 import { Textarea } from "./ui/textarea";
 
 const DANGER_COLORS: Record<string, Record<string, string>> = {
@@ -57,26 +57,19 @@ function DangerComparison() {
     <section>
       <h2 className="text-2xl font-bold mb-4">Danger Model Comparison</h2>
 
-      <Card className="mb-4">
-        <CardContent className="space-y-4 pt-6">
-          <Textarea
-            rows={4}
-            value={comment}
-            placeholder="Write one comment to compare EVD, EVD2 and EVD3..."
-            onChange={(event) => setComment(event.target.value)}
-            disabled={loading}
-          />
+      <Textarea
+        rows={4}
+        value={comment}
+        placeholder="Write one comment to compare EVD, EVD2 and EVD3..."
+        onChange={(event) => setComment(event.target.value)}
+        disabled={loading}
+      />
 
-          <div className="flex justify-end">
-            <Button
-              onClick={handleCompare}
-              disabled={!comment.trim() || loading}
-            >
-              {loading ? "Comparing..." : "Compare Danger"}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex justify-end">
+        <Button onClick={handleCompare} disabled={!comment.trim() || loading}>
+          {loading ? "Comparing..." : "Compare Danger"}
+        </Button>
+      </div>
 
       {error && (
         <Card className="mb-4 border-red-200 bg-red-50">
@@ -87,12 +80,10 @@ function DangerComparison() {
       )}
 
       {result && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Comparison Result</CardTitle>
-          </CardHeader>
+        <div>
+          <p>Comparison Result</p>
 
-          <CardContent className="space-y-4">
+          <div className="space-y-4">
             <p className="text-sm text-muted-foreground">{result.comment}</p>
 
             <div className="grid gap-3 md:grid-cols-3">
@@ -127,8 +118,8 @@ function DangerComparison() {
                 );
               })}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
     </section>
   );
