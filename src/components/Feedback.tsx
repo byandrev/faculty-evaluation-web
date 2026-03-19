@@ -83,8 +83,14 @@ function Feedback() {
             Upload CSV
           </Label>
 
-          <Select value={model} onValueChange={(value) => setModel(value)} disabled={loading}>
-            <SelectTrigger className="w-[140px]">
+          <Select
+            value={model}
+            onValueChange={(value: string | null) => {
+              if (value) setModel(value);
+            }}
+            disabled={loading}
+          >
+            <SelectTrigger className="w-35">
               <SelectValue placeholder="Select model" />
             </SelectTrigger>
 
