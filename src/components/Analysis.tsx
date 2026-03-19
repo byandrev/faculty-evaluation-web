@@ -14,12 +14,6 @@ import {
   TableRow,
 } from "./ui/table";
 
-const DANGER_LEVELS: Record<string, string> = {
-  LABEL_0: "Normal",
-  LABEL_1: "Critical",
-  LABEL_2: "Very Critical",
-};
-
 const SENTIMENT_COLORS: Record<string, string> = {
   POS: "bg-green-100 text-green-800",
   NEG: "bg-red-100 text-red-800",
@@ -172,9 +166,9 @@ function Analysis() {
                   <TableCell>
                     {result.danger ? (
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-bold ${DANGER_COLORS[result.danger.description] || "bg-gray-100 text-gray-800"}`}
+                        className={`px-2 py-1 uppercase rounded-full text-xs font-bold ${DANGER_COLORS[result.danger.description] || "bg-gray-100 text-gray-800"}`}
                       >
-                        {DANGER_LEVELS[result.danger.description]}
+                        {result.danger.description}
                       </span>
                     ) : (
                       "-"
