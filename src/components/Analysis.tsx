@@ -28,7 +28,7 @@ const DANGER_COLORS: Record<string, Record<string, string>> = {
   },
   evd2: {
     bueno: "bg-green-100 text-green-800",
-    bajo: "bg-yellow-50 text-yellow-400",
+    bajo: "bg-gray-100 text-gray-800",
     critico: "bg-yellow-100 text-yellow-800",
     muy_critico: "bg-red-100 text-red-800",
   },
