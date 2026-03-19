@@ -75,11 +75,11 @@ function Feedback() {
           />
           <Label
             htmlFor="csv-upload"
-            className={`inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 cursor-pointer ${
+            className={`inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 px-2 py-2 cursor-pointer ${
               loading ? "opacity-50 pointer-events-none" : ""
             }`}
           >
-            <Upload className="mr-2 h-4 w-4" />
+            <Upload className="h-4 w-4" />
             Upload CSV
           </Label>
 
@@ -90,7 +90,7 @@ function Feedback() {
             }}
             disabled={loading}
           >
-            <SelectTrigger className="w-35 h-full py-2">
+            <SelectTrigger className="w-20 h-8!">
               <SelectValue />
             </SelectTrigger>
 
