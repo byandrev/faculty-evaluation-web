@@ -1,7 +1,6 @@
 import Analysis from "./components/Analysis";
 import Feedback from "./components/Feedback";
 import Header from "./components/Header";
-import Hero from "./components/Hero";
 
 export function App() {
   return (
@@ -10,7 +9,7 @@ export function App() {
 
       <main className="py-8">
         <div className="p-6 grid gap-4 max-w-3xl mx-auto">
-          <Hero />
+          {/* <Hero /> */}
           <Feedback />
           <Analysis />
         </div>
