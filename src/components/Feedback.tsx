@@ -3,6 +3,13 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 import { useAnalysis } from "../hooks/useAnalysis";
 import analyzeComment from "../services/api/Analyze";
@@ -11,6 +18,7 @@ import uploadCsv from "../services/api/Upload";
 function Feedback() {
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
+  const [model, setModel] = useState("evd");
 
   const { setAnalysisResults } = useAnalysis();
 
@@ -19,7 +27,7 @@ function Feedback() {
 
     setLoading(true);
 
-    analyzeComment(comment)
+    analyzeComment(comment, model)
       .then((response) => {
         setAnalysisResults(response);
       })
@@ -31,7 +39,8 @@ function Feedback() {
     if (!file) return;
 
     setLoading(true);
-    uploadCsv(file)
+
+    uploadCsv(file, model)
       .then((response) => {
         setAnalysisResults(response);
       })
@@ -55,7 +64,7 @@ function Feedback() {
       />
 
       <div className="flex justify-between mt-4">
-        <div>
+        <div className="flex items-center gap-4">
           <input
             type="file"
             accept="application/csv"
@@ -73,6 +82,18 @@ function Feedback() {
             <Upload className="mr-2 h-4 w-4" />
             Upload CSV
           </Label>
+
+          <Select value={model} onValueChange={setModel} disabled={loading}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Select model" />
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectItem value="evd">EVD</SelectItem>
+              <SelectItem value="evd2">EVD2</SelectItem>
+              <SelectItem value="evd3">EVD3</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <Button disabled={!comment.trim() || loading} onClick={handleSubmit}>
