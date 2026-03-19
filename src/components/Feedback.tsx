@@ -64,7 +64,7 @@ function Feedback() {
       />
 
       <div className="flex justify-between mt-4">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <input
             type="file"
             accept="application/csv"
@@ -90,7 +90,7 @@ function Feedback() {
             }}
             disabled={loading}
           >
-            <SelectTrigger className="w-35">
+            <SelectTrigger className="w-35 h-full py-2">
               <SelectValue />
             </SelectTrigger>
 
