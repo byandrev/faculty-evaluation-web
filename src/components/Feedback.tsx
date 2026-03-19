@@ -91,7 +91,7 @@ function Feedback() {
             disabled={loading}
           >
             <SelectTrigger className="w-35">
-              <SelectValue placeholder="Select model" />
+              <SelectValue />
             </SelectTrigger>
 
             <SelectContent>
