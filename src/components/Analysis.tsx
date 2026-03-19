@@ -20,14 +20,23 @@ const SENTIMENT_COLORS: Record<string, string> = {
   NEU: "bg-gray-100 text-gray-800",
 };
 
-const DANGER_COLORS: Record<string, string> = {
-  bueno: "bg-green-100 text-green-800",
-  bajo: "bg-green-100 text-green-800",
-  normal: "bg-green-100 text-green-800",
-  critico: "bg-yellow-100 text-yellow-800",
-  medio: "bg-yellow-100 text-yellow-800",
-  alto: "bg-red-100 text-red-800",
-  muy_critico: "bg-red-100 text-red-800",
+const DANGER_COLORS: Record<string, Record<string, string>> = {
+  evd: {
+    normal: "bg-green-100 text-green-800",
+    critico: "bg-yellow-100 text-yellow-800",
+    muy_critico: "bg-red-100 text-red-800",
+  },
+  evd2: {
+    bueno: "bg-green-100 text-green-800",
+    bajo: "bg-yellow-50 text-yellow-400",
+    critico: "bg-yellow-100 text-yellow-800",
+    muy_critico: "bg-red-100 text-red-800",
+  },
+  evd3: {
+    bajo: "bg-green-100 text-green-800",
+    medio: "bg-yellow-100 text-yellow-800",
+    alto: "bg-red-100 text-red-800",
+  },
 };
 
 function Analysis() {
@@ -166,7 +175,7 @@ function Analysis() {
                   <TableCell>
                     {result.danger ? (
                       <span
-                        className={`px-2 py-1 uppercase rounded-full text-xs font-bold ${DANGER_COLORS[result.danger.description] || "bg-gray-100 text-gray-800"}`}
+                        className={`px-2 py-1 uppercase rounded-full text-xs font-bold ${DANGER_COLORS[result.model_used][result.danger.description] || "bg-gray-100 text-gray-800"}`}
                       >
                         {result.danger.description}
                       </span>

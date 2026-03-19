@@ -34,6 +34,7 @@ export interface AnalysisResults {
     description: string;
   };
   status: string;
+  model_used: string;
 }
 
 type ResultsContextType = {
