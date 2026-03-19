@@ -27,9 +27,13 @@ const SENTIMENT_COLORS: Record<string, string> = {
 };
 
 const DANGER_COLORS: Record<string, string> = {
-  LABEL_0: "bg-green-100 text-green-800",
-  LABEL_1: "bg-yellow-100 text-yellow-800",
-  LABEL_2: "bg-red-100 text-red-800",
+  bueno: "bg-green-100 text-green-800",
+  bajo: "bg-green-100 text-green-800",
+  normal: "bg-green-100 text-green-800",
+  critico: "bg-yellow-100 text-yellow-800",
+  medio: "bg-yellow-100 text-yellow-800",
+  alto: "bg-red-100 text-red-800",
+  muy_critico: "bg-red-100 text-red-800",
 };
 
 function Analysis() {
@@ -168,9 +172,9 @@ function Analysis() {
                   <TableCell>
                     {result.danger ? (
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-bold ${DANGER_COLORS[result.danger.label] || "bg-gray-100 text-gray-800"}`}
+                        className={`px-2 py-1 rounded-full text-xs font-bold ${DANGER_COLORS[result.danger.description] || "bg-gray-100 text-gray-800"}`}
                       >
-                        {DANGER_LEVELS[result.danger.label]}
+                        {DANGER_LEVELS[result.danger.description]}
                       </span>
                     ) : (
                       "-"
@@ -179,7 +183,7 @@ function Analysis() {
 
                   <TableCell>
                     {result.danger
-                      ? `${(result.danger.score * 100).toFixed(1)}%`
+                      ? `${(result.danger.label.score * 100).toFixed(1)}%`
                       : "-"}
                   </TableCell>
                 </TableRow>

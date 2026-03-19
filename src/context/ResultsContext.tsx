@@ -30,8 +30,8 @@ export interface AnalysisResults {
     output: string[];
   };
   danger: {
-    label: string;
-    score: number;
+    label: { label: string; score: number };
+    description: string;
   };
   status: string;
 }
