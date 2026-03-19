@@ -3,7 +3,7 @@ import { API_URL } from "../../config";
 import type { AnalysisResults } from "../../context/ResultsContext";
 
 async function analyzeComment(comment: string, model: string): Promise<AnalysisResults[]> {
-  const request = await fetch(`${API_URL}/comments?model=${model}`, {
+  const request = await fetch(`${API_URL}/comments/?model=${model}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

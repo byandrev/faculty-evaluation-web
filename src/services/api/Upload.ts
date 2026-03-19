@@ -8,7 +8,7 @@ async function uploadCsv(file: File, model: string): Promise<AnalysisResults[]> 
   formData.append("file", file);
 
 
-  const request = await fetch(`${API_URL}/upload?model=${model}`, {
+  const request = await fetch(`${API_URL}/upload/?model=${model}`, {
     method: "POST",
     body: formData,
   });
